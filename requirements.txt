@@ -1,0 +1,12 @@
+-e .
+awscli
+dvc
+loguru
+mkdocs
+mlflow
+pip
+pre-commit
+python-dotenv
+ruff
+tqdm
+typer
