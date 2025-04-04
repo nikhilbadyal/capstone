@@ -78,8 +78,8 @@ def save_model(model, model_name: str) -> None:
 
 def load_model(model_name: str | Path):
     """Load the trained model from a file."""
+    model_path = get_model_path() / f"{model_name}.pkl"
     try:
-        model_path = get_model_path() / f"{model_name}.pkl"
         model = joblib.load(model_path)
         logging.info("Model loaded from %s", model_path)
         return model

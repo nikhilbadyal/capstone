@@ -9,3 +9,6 @@ feature_engineering:
 model_training:
   random_state: 42
   model_name: "capstone_model"
+
+model_evaluation:
+  experiment_name: 'capstone'

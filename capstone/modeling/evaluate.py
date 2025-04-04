@@ -1,7 +1,9 @@
 import json
 from pathlib import Path
+from typing import Any
 
 import mlflow
+from mlflow.models import infer_signature
 import mlflow.sklearn
 import numpy as np
 from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_auc_score
@@ -9,7 +11,6 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, roc_a
 from capstone.config import (
     EXPERIMENT_INFO_PATH,
     METRICS_PATH,
-    MODELS_DIR,
     PROCESSED_TEST_DATA_FILE,
 )
 from capstone.environment import MLFLOW_TRACKING_URI, PARAMS_FILE
@@ -20,7 +21,7 @@ from capstone.utils import load_data, load_model, load_params
 mlflow.set_tracking_uri(MLFLOW_TRACKING_URI.get(not_exists_okay=False))
 
 
-def evaluate_model(clf, x_test: np.ndarray, y_test: np.ndarray) -> dict:
+def evaluate_model(clf, x_test: np.ndarray, y_test: np.ndarray) -> tuple[dict, Any]:
     """Evaluate the model and return the evaluation metrics."""
     try:
         y_pred = clf.predict(x_test)
@@ -38,7 +39,10 @@ def evaluate_model(clf, x_test: np.ndarray, y_test: np.ndarray) -> dict:
             "auc": auc,
         }
         logging.info("Model evaluation metrics calculated")
-        return metrics_dict
+        return (
+            metrics_dict,
+            infer_signature(x_test, y_pred),
+        )
     except Exception as e:
         logging.error("Error during model evaluation: %s", e)
         raise
@@ -70,9 +74,12 @@ def save_model_info(run_id: str, model_path: str, file_path: str) -> None:
 
 
 def main():
-    mlflow.set_experiment("my-dvc-pipeline")
+    params_file = PARAMS_FILE.get()
+    params = load_params(params_path=params_file)
+    mlflow.set_experiment(params["model_evaluation"]["experiment_name"])
     with mlflow.start_run() as run:  # Start an MLflow run
         try:
+            logging.debug(f"Logging into {mlflow.get_artifact_uri()}")
             params_file = PARAMS_FILE.get()
             params = load_params(params_path=params_file)
             model_name = params["model_training"]["model_name"]
@@ -82,7 +89,7 @@ def main():
             x_test = test_data.iloc[:, :-1].values
             y_test = test_data.iloc[:, -1].values
 
-            metrics = evaluate_model(clf, x_test, y_test)
+            metrics, signature = evaluate_model(clf, x_test, y_test)
 
             save_metrics(metrics, METRICS_PATH)
 
@@ -97,7 +104,9 @@ def main():
                     mlflow.log_param(param_name, param_value)
 
             # Log model to MLflow
-            mlflow.sklearn.log_model(clf, MODELS_DIR)
+            mlflow.sklearn.log_model(
+                clf, "model", input_example=x_test[0:1], signature=signature
+            )
 
             # Save model info
             save_model_info(run.info.run_id, "model", EXPERIMENT_INFO_PATH)
@@ -106,7 +115,7 @@ def main():
             mlflow.log_artifact(METRICS_PATH)
 
         except Exception as e:
-            logging.error("Failed to complete the model evaluation process: %s", e)
+            logging.exception("Failed to complete the model evaluation process: %s", e)
             print(f"Error: {e}")
 
 
