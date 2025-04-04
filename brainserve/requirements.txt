@@ -1,0 +1,7 @@
+Flask
+mlflow
+mlflow_skinny
+nltk
+numpy
+pandas
+prometheus_client
