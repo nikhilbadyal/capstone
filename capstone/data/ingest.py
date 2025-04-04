@@ -1,5 +1,5 @@
 # data ingestion
-import os
+from pathlib import Path
 
 import pandas as pd
 from sklearn.model_selection import train_test_split
@@ -8,7 +8,7 @@ from capstone.config import RAW_DATA_DIR
 from capstone.data.connections.s3 import S3Operations
 from capstone.environment import PARAMS_FILE, S3_ACCESS_KEY, S3_BUCKET, S3_SECRET_KEY
 from capstone.logger import logging
-from capstone.utils import load_params
+from capstone.utils import load_params, save_data
 
 pd.set_option("future.no_silent_downcasting", True)
 
@@ -31,18 +31,6 @@ def preprocess_data(df: pd.DataFrame) -> pd.DataFrame:
         raise
 
 
-def save_data(train_data: pd.DataFrame, test_data: pd.DataFrame) -> None:
-    """Save the train and test datasets."""
-    try:
-        os.makedirs(RAW_DATA_DIR, exist_ok=True)
-        train_data.to_csv(os.path.join(RAW_DATA_DIR, "train.csv"), index=False)
-        test_data.to_csv(os.path.join(RAW_DATA_DIR, "test.csv"), index=False)
-        logging.debug("Train and test data saved to %s", RAW_DATA_DIR)
-    except Exception as e:
-        logging.error("Unexpected error occurred while saving the data: %s", e)
-        raise
-
-
 def main():
     try:
         params_file = PARAMS_FILE.get()
@@ -60,7 +48,8 @@ def main():
         train_data, test_data = train_test_split(
             final_df, test_size=test_size, random_state=42
         )
-        save_data(train_data, test_data)
+        save_data(train_data, Path(RAW_DATA_DIR, "train.csv"), keep_index=False)
+        save_data(test_data, Path(RAW_DATA_DIR, "test.csv"), keep_index=False)
     except Exception as e:
         logging.error("Failed to complete the data ingestion process: %s", e)
         print(f"Error: {e}")

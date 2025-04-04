@@ -1,3 +1,6 @@
+import os
+from pathlib import Path
+
 import pandas as pd
 import yaml
 
@@ -33,4 +36,15 @@ def load_data(data_url: str) -> pd.DataFrame:
         raise
     except Exception as e:
         logging.error("Unexpected error occurred while loading the data: %s", e)
+        raise
+
+
+def save_data(df: pd.DataFrame, file_path: Path, keep_index: bool = True) -> None:
+    """Save the dataframe to a CSV file."""
+    try:
+        os.makedirs(os.path.dirname(file_path), exist_ok=True)
+        df.to_csv(file_path, index=keep_index)
+        logging.info("Data saved to %s", file_path)
+    except Exception as e:
+        logging.error("Unexpected error occurred while saving the data: %s", e)
         raise

@@ -7,6 +7,7 @@ import string
 import nltk
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+import pandas as pd
 
 from capstone.config import (
     DATA_DIR,
@@ -48,7 +49,7 @@ def preprocess_dataframe(df, col="text"):
         # Remove punctuations
         text = re.sub("[%s]" % re.escape(string.punctuation), " ", text)
         text = text.replace("؛", "")
-        text = re.sub("\s+", " ", text).strip()
+        text = re.sub(r"\s+", " ", text).strip()
         # Remove stop words
         text = " ".join([word for word in text.split() if word not in stop_words])
         # Lemmatization
@@ -70,11 +71,12 @@ def preprocess_dataframe(df, col="text"):
 def main():
     try:
         # Fetch the data from data/raw
-        logging.info("data loaded properly")
+        train_data = pd.read_csv(TRAIN_DATA_FILE)
+        test_data = pd.read_csv(TEST_DATA_FILE)
 
         # Transform the data
-        train_processed_data = preprocess_dataframe(TRAIN_DATA_FILE, "review")
-        test_processed_data = preprocess_dataframe(TEST_DATA_FILE, "review")
+        train_processed_data = preprocess_dataframe(train_data, "review")
+        test_processed_data = preprocess_dataframe(test_data, "review")
 
         # Store the data inside data/processed
         os.makedirs(INTERIM_DATA_DIR, exist_ok=True)

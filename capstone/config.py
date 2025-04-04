@@ -13,10 +13,10 @@ logger.info(f"PROJ_ROOT path is: {PROJ_ROOT}")
 DATA_DIR = PROJ_ROOT / "data"
 RAW_DATA_DIR = DATA_DIR / "raw"
 TRAIN_DATA_FILE = RAW_DATA_DIR / "train.csv"
-TRAIN_PROCESSED_DATA_FILE = RAW_DATA_DIR / "train_processed.csv"
-TEST_DATA_FILE = DATA_DIR / "test.csv"
-TEST_PROCESSED_DATA_FILE = DATA_DIR / "test_processed.csv"
+TEST_DATA_FILE = RAW_DATA_DIR / "test.csv"
 INTERIM_DATA_DIR = DATA_DIR / "interim"
+TRAIN_PROCESSED_DATA_FILE = INTERIM_DATA_DIR / "train_processed.csv"
+TEST_PROCESSED_DATA_FILE = INTERIM_DATA_DIR / "test_processed.csv"
 PROCESSED_DATA_DIR = DATA_DIR / "processed"
 EXTERNAL_DATA_DIR = DATA_DIR / "external"
 

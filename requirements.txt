@@ -1,13 +1,23 @@
 -e .
 awscli
+boto3
 dvc
+joblib
+jupyterlab
 loguru
 mkdocs
 mlflow
+nltk
+notebook
+numpy
+pandas
 pip
 pre-commit
 python-dotenv
 PyYAML
 ruff
+scikit-learn
+scipy
 tqdm
 typer
+xgboost
