@@ -1,5 +1,5 @@
 data_ingestion:
-  test_size: 0.25
+  test_size: 0.30
   raw_file: raw/data.csv
 
 feature_engineering:
