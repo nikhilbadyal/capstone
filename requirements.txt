@@ -7,6 +7,7 @@ mlflow
 pip
 pre-commit
 python-dotenv
+PyYAML
 ruff
 tqdm
 typer
