@@ -12,10 +12,10 @@ import pandas as pd
 from capstone.config import (
     DATA_DIR,
     INTERIM_DATA_DIR,
+    INTERIM_TEST_DATA_FILE,
+    INTERIM_TRAIN_DATA_FILE,
     TEST_DATA_FILE,
-    TEST_PROCESSED_DATA_FILE,
     TRAIN_DATA_FILE,
-    TRAIN_PROCESSED_DATA_FILE,
 )
 from capstone.logger import logging
 
@@ -81,8 +81,8 @@ def main():
         # Store the data inside data/processed
         os.makedirs(INTERIM_DATA_DIR, exist_ok=True)
 
-        train_processed_data.to_csv(TRAIN_PROCESSED_DATA_FILE, index=False)
-        test_processed_data.to_csv(TEST_PROCESSED_DATA_FILE, index=False)
+        train_processed_data.to_csv(INTERIM_TRAIN_DATA_FILE, index=False)
+        test_processed_data.to_csv(INTERIM_TEST_DATA_FILE, index=False)
 
         logging.info("Processed data saved to %s", DATA_DIR)
     except Exception as e:

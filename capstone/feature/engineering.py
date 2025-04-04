@@ -1,25 +1,24 @@
 # feature engineering
 
-import joblib
 import pandas as pd
 from sklearn.feature_extraction.text import CountVectorizer
 
 from capstone.config import (
-    MODELS_DIR,
-    PROCESSED_DATA_DIR,
-    TEST_PROCESSED_DATA_FILE,
-    TRAIN_PROCESSED_DATA_FILE,
+    INTERIM_TEST_DATA_FILE,
+    INTERIM_TRAIN_DATA_FILE,
+    PROCESSED_TEST_DATA_FILE,
+    PROCESSED_TRAIN_DATA_FILE,
 )
 from capstone.environment import PARAMS_FILE
 from capstone.logger import logging
-from capstone.utils import load_data, load_params, save_data
+from capstone.utils import load_data, load_params, save_data, save_model
 
 
 def apply_bow(
     train_data: pd.DataFrame,
     test_data: pd.DataFrame,
     max_features: int,
-    model_name: str,
+    vectorizer_name: str,
 ) -> tuple:
     """Apply Count Vectorizer to the data."""
     try:
@@ -39,9 +38,7 @@ def apply_bow(
 
         test_df = pd.DataFrame(x_test_bow.toarray())
         test_df["label"] = y_test
-        model = MODELS_DIR / f"{model_name}.pkl"
-
-        joblib.dump(vectorizer, model)
+        save_model(vectorizer, vectorizer_name)
         logging.info("Bag of Words applied and data transformed")
 
         return train_df, test_df
@@ -55,15 +52,17 @@ def main():
         params_file = PARAMS_FILE.get()
         params = load_params(params_path=params_file)
         max_features = params["feature_engineering"]["max_features"]
-        model_name = params["feature_engineering"]["model_name"]
+        vectorizer_name = params["feature_engineering"]["vectorizer_name"]
 
-        train_data = load_data(TRAIN_PROCESSED_DATA_FILE)
-        test_data = load_data(TEST_PROCESSED_DATA_FILE)
+        train_data = load_data(INTERIM_TRAIN_DATA_FILE)
+        test_data = load_data(INTERIM_TEST_DATA_FILE)
 
-        train_df, test_df = apply_bow(train_data, test_data, max_features, model_name)
+        train_df, test_df = apply_bow(
+            train_data, test_data, max_features, vectorizer_name
+        )
 
-        save_data(train_df, PROCESSED_DATA_DIR / "train_bow.csv", keep_index=False)
-        save_data(test_df, PROCESSED_DATA_DIR / "test_bow.csv", keep_index=False)
+        save_data(train_df, PROCESSED_TRAIN_DATA_FILE, keep_index=False)
+        save_data(test_df, PROCESSED_TEST_DATA_FILE, keep_index=False)
     except Exception as e:
         logging.error("Failed to complete the feature engineering process: %s", e)
         print(f"Error: {e}")

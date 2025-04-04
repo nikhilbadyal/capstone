@@ -4,4 +4,8 @@ data_ingestion:
 
 feature_engineering:
   max_features: 50
-  model_name: "bert-base-uncased"
+  vectorizer_name: "vectorizer_name"
+
+model_training:
+  random_state: 42
+  model_name: "capstone_model"
