@@ -13,7 +13,7 @@ def train_model(
     """Train the Logistic Regression model."""
     try:
         clf = LogisticRegression(
-            C=1, solver="liblinear", penalty="l1", random_state=random_state
+            C=1, solver="liblinear", penalty="l2", random_state=random_state
         )
         clf.fit(x_train, y_train)
         logging.info("Model training completed")

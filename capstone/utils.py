@@ -1,3 +1,4 @@
+import json
 import os
 from pathlib import Path
 
@@ -88,4 +89,19 @@ def load_model(model_name: str | Path):
         raise
     except Exception as e:
         logging.error("Unexpected error occurred while loading the model: %s", e)
+        raise
+
+
+def load_model_info(file_path: str | Path) -> dict:
+    """Load the model info from a JSON file."""
+    try:
+        with open(file_path, "r") as file:
+            model_info = json.load(file)
+        logging.debug("Model info loaded from %s", file_path)
+        return model_info
+    except FileNotFoundError:
+        logging.error("File not found: %s", file_path)
+        raise
+    except Exception as e:
+        logging.error("Unexpected error occurred while loading the model info: %s", e)
         raise
