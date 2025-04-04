@@ -1,7 +1,11 @@
+boto3
 Flask
+gunicorn
 mlflow
 mlflow_skinny
 nltk
 numpy
 pandas
 prometheus_client
+psutil
+python-dotenv

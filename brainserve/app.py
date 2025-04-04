@@ -4,7 +4,6 @@ import string
 import time
 import warnings
 
-from brainserve.environment import MLFLOW_TRACKING_URI
 from dotenv import load_dotenv
 from flask import Flask, render_template, request
 import joblib
@@ -20,6 +19,8 @@ from prometheus_client import (
     Histogram,
     generate_latest,
 )
+
+from environment import MLFLOW_TRACKING_URI
 
 warnings.simplefilter("ignore", UserWarning)
 warnings.filterwarnings("ignore")
@@ -132,7 +133,9 @@ model_version = get_latest_model_version(model_name)
 model_uri = f"models:/{model_name}/{model_version}"
 print(f"Fetching model from: {model_uri}")
 model = mlflow.pyfunc.load_model(model_uri)
+print("Loaded model.")
 vectorizer = joblib.load(Path("models/vectorizer.pkl"))
+print("Loaded vectorizer.")
 
 
 @app.route("/")

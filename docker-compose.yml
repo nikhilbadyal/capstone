@@ -1,0 +1,7 @@
+services:
+  brainserve:
+    build: .
+    ports:
+      - "8080:5001"
+    env_file:
+      - brainserve/.env
