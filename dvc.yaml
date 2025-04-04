@@ -1,0 +1,57 @@
+# updated dvc.yaml
+
+stages:
+  data_ingestion:
+    cmd: python capstone/data/ingest.py
+    deps:
+    - capstone/data/ingest.py
+    params:
+    - data_ingestion.test_size
+    - data_ingestion.raw_file
+    outs:
+    - data/raw
+
+  data_preprocessing:
+    cmd: python capstone/data/pre_process.py
+    deps:
+    - data/raw
+    - capstone/data/pre_process.py
+    outs:
+    - data/interim
+
+  feature_engineering:
+    cmd: python capstone/feature/engineering.py
+    deps:
+    - data/interim
+    - capstone/feature/engineering.py
+    params:
+    - feature_engineering.max_features
+    - feature_engineering.vectorizer_name
+    outs:
+    - data/processed
+    - models/${feature_engineering.vectorizer_name}.pkl
+
+  model_building:
+    cmd: python capstone/modeling/train.py
+    deps:
+    - data/processed
+    - capstone/modeling/train.py
+    outs:
+    - models/${model_training.model_name}.pkl
+
+  model_evaluation:
+    cmd: python capstone/modeling/evaluate.py
+    deps:
+    - models/${model_training.model_name}.pkl
+    - capstone/modeling/evaluate.py
+    metrics:
+    - reports/metrics.json
+    outs:
+    - reports/experiment_info.json
+
+  model_registration:
+    cmd: python capstone/modeling/register.py
+    deps:
+    - reports/experiment_info.json
+    - reports/metrics.json
+    - capstone/modeling/register.py

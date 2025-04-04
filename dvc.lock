@@ -1,0 +1,115 @@
+schema: '2.0'
+stages:
+  data_ingestion:
+    cmd: python capstone/data/ingest.py
+    deps:
+    - path: capstone/data/ingest.py
+      hash: md5
+      md5: 77f911e69a7aa33bee851e34fefcf645
+      size: 1991
+    params:
+      params.yaml:
+        data_ingestion.raw_file: raw/data.csv
+        data_ingestion.test_size: 0.25
+    outs:
+    - path: data/raw
+      hash: md5
+      md5: 653ee72ed1467522e9cdc4960b04192f.dir
+      size: 648741
+      nfiles: 2
+  data_preprocessing:
+    cmd: python capstone/data/pre_process.py
+    deps:
+    - path: capstone/data/pre_process.py
+      hash: md5
+      md5: 19191a1580340cfd56d8e2ae1a092dff
+      size: 2816
+    - path: data/raw
+      hash: md5
+      md5: 653ee72ed1467522e9cdc4960b04192f.dir
+      size: 648741
+      nfiles: 2
+    outs:
+    - path: data/interim
+      hash: md5
+      md5: 7a494ebb5a023749da057597ad3100e7.dir
+      size: 400767
+      nfiles: 2
+  feature_engineering:
+    cmd: python capstone/feature/engineering.py
+    deps:
+    - path: capstone/feature/engineering.py
+      hash: md5
+      md5: 37a9d16c4b1b1006f889769306c40261
+      size: 2251
+    - path: data/interim
+      hash: md5
+      md5: 7a494ebb5a023749da057597ad3100e7.dir
+      size: 400767
+      nfiles: 2
+    params:
+      params.yaml:
+        feature_engineering.max_features: 50
+        feature_engineering.vectorizer_name: vectorizer
+    outs:
+    - path: data/processed
+      hash: md5
+      md5: 4fdf66b10cf908b641d0592d7597d2f7.dir
+      size: 51381
+      nfiles: 2
+    - path: models/vectorizer.pkl
+      hash: md5
+      md5: 7260421c4d7e082b19d0b45a24f7ec6c
+      size: 1865
+  model_building:
+    cmd: python capstone/modeling/train.py
+    deps:
+    - path: capstone/modeling/train.py
+      hash: md5
+      md5: ea7185780e9e35b4f932a24a8d51ef7a
+      size: 1424
+    - path: data/processed
+      hash: md5
+      md5: 4fdf66b10cf908b641d0592d7597d2f7.dir
+      size: 51381
+      nfiles: 2
+    outs:
+    - path: models/capstone_model.pkl
+      hash: md5
+      md5: 797a32f4f367d8657d563cf79496aebd
+      size: 1275
+  model_evaluation:
+    cmd: python capstone/modeling/evaluate.py
+    deps:
+    - path: capstone/modeling/evaluate.py
+      hash: md5
+      md5: ac66ce6536773071ab6f4043bfdd5955
+      size: 4214
+    - path: models/capstone_model.pkl
+      hash: md5
+      md5: 797a32f4f367d8657d563cf79496aebd
+      size: 1275
+    outs:
+    - path: reports/experiment_info.json
+      hash: md5
+      md5: 6886dfb5d3f5ef991db48ba676d0782c
+      size: 79
+    - path: reports/metrics.json
+      hash: md5
+      md5: dbb8ec5783b9bbb93d7f7d50433ed89b
+      size: 127
+  model_registration:
+    cmd: python capstone/modeling/register.py
+    deps:
+    - path: capstone/modeling/register.py
+      hash: md5
+      md5: b32b2504e748e4c138a567c537323572
+      size: 1681
+    - path: reports/experiment_info.json
+      hash: md5
+      md5: 6886dfb5d3f5ef991db48ba676d0782c
+      size: 79
+    - path: reports/metrics.json
+      hash: md5
+      md5: dbb8ec5783b9bbb93d7f7d50433ed89b
+      size: 127
