@@ -1,60 +1,24 @@
-# Capstone
+# 🎬 Capstone: Movie Review Sentiment Analyzer (MLOps Project)
 
-<a target="_blank" href="https://cookiecutter-data-science.drivendata.org/">
-    <img src="https://img.shields.io/badge/CCDS-Project%20template-328F97?logo=cookiecutter" />
-</a>
+This project demonstrates a **Movie Review Sentiment Analyzer** built with a strong focus on **MLOps best practices**. The core goal is to serve an ML model in production using tools like **MLflow**, **DVC**, and **FastAPI**.
 
-Capstone Project
+> While the machine learning model is relatively simple (a binary text sentiment classifier), the project’s focus is on building a robust, maintainable, and reproducible MLOps pipeline.
 
-## Project Organization
+---
 
-```
-├── LICENSE            <- Open-source license if one is chosen
-├── Makefile           <- Makefile with convenience commands like `make data` or `make train`
-├── README.md          <- The top-level README for developers using this project.
-├── data
-│   ├── external       <- Data from third party sources.
-│   ├── interim        <- Intermediate data that has been transformed.
-│   ├── processed      <- The final, canonical data sets for modeling.
-│   └── raw            <- The original, immutable data dump.
-│
-├── docs               <- A default mkdocs project; see www.mkdocs.org for details
-│
-├── models             <- Trained and serialized models, model predictions, or model summaries
-│
-├── notebooks          <- Jupyter notebooks. Naming convention is a number (for ordering),
-│                         the creator's initials, and a short `-` delimited description, e.g.
-│                         `1.0-jqp-initial-data-exploration`.
-│
-├── pyproject.toml     <- Project configuration file with package metadata for
-│                         capstone and configuration for tools like black
-│
-├── references         <- Data dictionaries, manuals, and all other explanatory materials.
-│
-├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
-│   └── figures        <- Generated graphics and figures to be used in reporting
-│
-├── requirements.txt   <- The requirements file for reproducing the analysis environment, e.g.
-│                         generated with `pip freeze > requirements.txt`
-│
-├── setup.cfg          <- Configuration file for flake8
-│
-└── capstone   <- Source code for use in this project.
-    │
-    ├── __init__.py             <- Makes capstone a Python module
-    │
-    ├── config.py               <- Store useful variables and configuration
-    │
-    ├── dataset.py              <- Scripts to download or generate data
-    │
-    ├── features.py             <- Code to create features for modeling
-    │
-    ├── modeling
-    │   ├── __init__.py
-    │   ├── predict.py          <- Code to run model inference with trained models
-    │   └── train.py            <- Code to train models
-    │
-    └── plots.py                <- Code to create visualizations
-```
+## 🚀 Features
 
---------
+- 🔍 **Text Sentiment Prediction** – Classifies movie reviews as **Positive** or **Negative**
+- 📊 **MLflow** – For experiment tracking, model versioning, and deployment
+- 📦 **DVC (Data Version Control)** – For managing and versioning data and model artifacts
+- 🌐 **FastAPI** – For exposing the trained model as a REST API
+- ☁️ **S3 Integration** – For storing datasets and model artifacts in the cloud
+- 🧪 **Modular Codebase** – Clean structure for preprocessing, training, evaluation, and serving
+
+## 🧪 MLOps Stack
+| Tool    | Purpose                              |
+|---------|--------------------------------------|
+| MLflow  | Experiment tracking & model registry |
+| DVC     | Data/model versioning & pipeline     |
+| FastAPI | Model serving via REST API           |
+| S3      | Artifact & data storage              |
